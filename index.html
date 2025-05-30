@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora PhenoAge - VitalExtension</title>
+  <style>
+    :root {
+      --color-principal: #2c3e50;
+      --color-secundario: #27ae60;
+      --color-fondo: #f9f9f9;
+      --color-texto: #333;
+      --color-optima: #e0f7fa;
+      --color-normal: #fff3cd;
+      --color-elevada: #f8d7da;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: var(--color-fondo);
+      color: var(--color-texto);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--color-principal);
+      font-size: 26px;
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: var(--color-secundario);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #219150;
+    }
+
+    .result {
+      margin-top: 30px;
+      padding: 25px;
+      border-radius: 10px;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .optimal {
+      background-color: var(--color-optima);
+      color: #0077b6;
+    }
+
+    .normal {
+      background-color: var(--color-normal);
+      color: #856404;
+    }
+
+    .elevated {
+      background-color: var(--color-elevada);
+      color: #721c24;
+    }
+
+    .cta {
+      margin-top: 25px;
+      text-align: center;
+    }
+
+    .cta a {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: var(--color-principal);
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta a:hover {
+      background-color: #1b2f40;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calcula tu Edad Biológica (PhenoAge)</h1>
+    <form id="phenoForm">
+      <label>Edad cronológica (años)</label>
+      <input type="number" step="0.1" id="age">
+      <label>Glucosa (mg/dL)</label>
+      <input type="number" step="0.1" id="glucose">
+      <label>Albúmina (g/dL)</label>
+      <input type="number" step="0.1" id="albumin">
+      <label>Creatinina (mg/dL)</label>
+      <input type="number" step="0.1" id="creatinine">
+      <label>Proteína C-reactiva (log mg/L)</label>
+      <input type="number" step="0.1" id="crp">
+      <label>Linfocitos (%)</label>
+      <input type="number" step="0.1" id="lymphocytes">
+      <label>Volumen corpuscular medio (MCV) (fL)</label>
+      <input type="number" step="0.1" id="mcv">
+      <label>RDW (%)</label>
+      <input type="number" step="0.1" id="rdw">
+      <label>Fosfatasa alcalina (U/L)</label>
+      <input type="number" step="0.1" id="alkphos">
+      <label>Leucocitos (10^3/µL)</label>
+      <input type="number" step="0.1" id="wbc">
+      <button type="button" onclick="calculatePhenoAge()">Calcular</button>
+    </form>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    function calculatePhenoAge() {
+      const age = parseFloat(document.getElementById('age').value);
+      const glucose = parseFloat(document.getElementById('glucose').value);
+      const albumin = parseFloat(document.getElementById('albumin').value);
+      const creatinine = parseFloat(document.getElementById('creatinine').value);
+      const crp = parseFloat(document.getElementById('crp').value);
+      const lymphocytes = parseFloat(document.getElementById('lymphocytes').value);
+      const mcv = parseFloat(document.getElementById('mcv').value);
+      const rdw = parseFloat(document.getElementById('rdw').value);
+      const alkphos = parseFloat(document.getElementById('alkphos').value);
+      const wbc = parseFloat(document.getElementById('wbc').value);
+
+      const xb = (
+        -19.907 +
+        0.0336 * age +
+        0.0095 * glucose +
+        -0.259 * albumin +
+        0.676 * creatinine +
+        0.157 * crp +
+        -0.021 * lymphocytes +
+        0.0268 * mcv +
+        0.3306 * rdw +
+        0.00188 * alkphos +
+        0.0554 * wbc
+      );
+
+      const phenoAge = 141.5 + Math.log(1 + Math.exp(xb)) * 10;
+      const diff = phenoAge - age;
+      let resultText = '';
+      let cssClass = '';
+
+      if (diff < -5) {
+        cssClass = 'optimal';
+        resultText = `🔵 ¡Felicidades! Tu edad biológica es significativamente más baja que tu edad real: <strong>${phenoAge.toFixed(1)} años</strong>. Estás ganando la partida al envejecimiento.`;
+      } else if (diff <= 5) {
+        cssClass = 'normal';
+        resultText = `🟡 Tu edad biológica es de <strong>${phenoAge.toFixed(1)} años</strong>, lo cual es similar a tu edad real. ¡Estás en el camino correcto!`;
+      } else {
+        cssClass = 'elevated';
+        resultText = `🔴 Tu edad biológica es de <strong>${phenoAge.toFixed(1)} años</strong>, lo cual es mayor que tu edad cronológica. Es hora de actuar para recuperar tu vitalidad.`;
+      }
+
+      document.getElementById('result').className = `result ${cssClass}`;
+      document.getElementById('result').innerHTML = `
+        ${resultText}
+        <div class="cta">
+          <a href="#">Activa tu membresía gratuita y recibe tu plan personalizado</a>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
