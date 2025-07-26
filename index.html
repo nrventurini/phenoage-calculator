@@ -1,11 +1,12 @@
 
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora PhenoAge - VitalExtension</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Calculadora PhenoAge - VitalExtension</title>
+<style>
     :root {
       --color-principal: #2c3e50;
       --color-secundario: #27ae60;
@@ -119,7 +120,26 @@
       background-color: #1b2f40;
     }
 
-    @media (max-width: 600px) {
+    
+/* 🎨 Botón CTA reutilizable para acción posterior al resultado */
+.cta-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--color-principal);
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cta-button:hover {
+  background-color: #1b2f40;
+  transform: scale(1.03);
+}
+
+@media (max-width: 600px) {
       .container {
         padding: 20px;
       }
@@ -127,85 +147,238 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Calcula tu Edad Biológica (PhenoAge)</h1>
-    <form id="phenoForm">
-      <label>Edad cronológica (años)</label>
-      <input type="number" step="0.1" id="age">
-      <label>Glucosa (mg/dL)</label>
-      <input type="number" step="0.1" id="glucose">
-      <label>Albúmina (g/dL)</label>
-      <input type="number" step="0.1" id="albumin">
-      <label>Creatinina (mg/dL)</label>
-      <input type="number" step="0.1" id="creatinine">
-      <label>Proteína C-reactiva (log mg/L)</label>
-      <input type="number" step="0.1" id="crp">
-      <label>Linfocitos (%)</label>
-      <input type="number" step="0.1" id="lymphocytes">
-      <label>Volumen corpuscular medio (MCV) (fL)</label>
-      <input type="number" step="0.1" id="mcv">
-      <label>RDW (%)</label>
-      <input type="number" step="0.1" id="rdw">
-      <label>Fosfatasa alcalina (U/L)</label>
-      <input type="number" step="0.1" id="alkphos">
-      <label>Leucocitos (10^3/µL)</label>
-      <input type="number" step="0.1" id="wbc">
-      <button type="button" onclick="calculatePhenoAge()">Calcular</button>
-    </form>
-    <div id="result" class="result"></div>
-  </div>
+<div class="container">
+<h1>Calcula tu Edad Biológica (PhenoAge)</h1>
+<form id="phenoForm">
+<label>Edad cronológica (años)</label>
+<input id="age" step="0.1" type="number"/>
+<label>Glucosa (mg/dL)</label>
+<input id="glucose" step="0.1" type="number"/>
+<label>Albúmina (g/dL)</label>
+<input id="albumin" step="0.1" type="number"/>
+<label>Creatinina (mg/dL)</label>
+<input id="creatinine" step="0.1" type="number"/>
+<label>Proteína C-reactiva (log mg/L)</label>
+<input id="crp" step="0.1" type="number"/>
+<label>Linfocitos (%)</label>
+<input id="lymphocytes" step="0.1" type="number"/>
+<label>Volumen corpuscular medio (MCV) (fL)</label>
+<input id="mcv" step="0.1" type="number"/>
+<label>RDW (%)</label>
+<input id="rdw" step="0.1" type="number"/>
+<label>Fosfatasa alcalina (U/L)</label>
+<input id="alkphos" step="0.1" type="number"/>
+<label>Leucocitos (10^3/µL)</label>
+<input id="wbc" step="0.1" type="number"/>
+<button onclick="calculatePhenoAge()" type="button">Calcular</button>
+</form>
 
-  <script>
-    function calculatePhenoAge() {
-      const age = parseFloat(document.getElementById('age').value);
-      const glucose = parseFloat(document.getElementById('glucose').value);
-      const albumin = parseFloat(document.getElementById('albumin').value);
-      const creatinine = parseFloat(document.getElementById('creatinine').value);
-      const crp = parseFloat(document.getElementById('crp').value);
-      const lymphocytes = parseFloat(document.getElementById('lymphocytes').value);
-      const mcv = parseFloat(document.getElementById('mcv').value);
-      const rdw = parseFloat(document.getElementById('rdw').value);
-      const alkphos = parseFloat(document.getElementById('alkphos').value);
-      const wbc = parseFloat(document.getElementById('wbc').value);
+<div class="result" id="result"></div><!-- 🔁 Bloque CTA: botón con enlace actualizado a página de servicios -->
 
-      const xb = (
-        -19.907 +
-        0.0336 * age +
-        0.0095 * glucose +
-        -0.259 * albumin +
-        0.676 * creatinine +
-        0.157 * crp +
-        -0.021 * lymphocytes +
-        0.0268 * mcv +
-        0.3306 * rdw +
-        0.00188 * alkphos +
-        0.0554 * wbc
-      );
+<!-- 🧠 CTA posterior al resultado -->
+<div id="cta" style="display: none; opacity: 0; transition: opacity 0.8s ease-in; margin-top: 30px; text-align: center;">
+  <!-- El contenido del botón se inserta dinámicamente desde JavaScript -->
+</div>
 
-      const phenoAge = 141.5 + Math.log(1 + Math.exp(xb)) * 10;
-      const diff = phenoAge - age;
-      let resultText = '';
-      let cssClass = '';
+<div id="lead-magnet" style="display: none; opacity: 0; transition: opacity 0.8s ease-in; margin-top: 30px; text-align: center;">
+<p><strong>¿Quieres recibir una guía gratuita con 7 claves científicas que ayudarán a reducir tu riesgo?</strong></p>
+<input id="userName" placeholder="Tu nombre (opcional)" style="margin-bottom: 10px;" type="text"/>
+<br/>
+<input id="userEmail" placeholder="Déjanos tu mejor email" type="email"/>
+<!-- Pregunta CAPTCHA aleatoria -->
+<div style="margin-top: 12px;">
+<label id="captchaPregunta" style="font-size: 14px;">Cargando pregunta seguridad...</label><br/>
+<input id="captchaRespuesta" style="margin-top: 4px; width: 60px;" type="text"/>
+</div>
+<!-- Honeypot (campo invisible para bots) -->
+<input autocomplete="off" id="campoTrampa" style="display: none;" type="text"/>
+<!-- Botón de envío -->
+<button class="btn btn-email" id="submitEmail" onclick="enviarEmail()" type="button">
+<span id="btnText">Enviar</span>
+<span id="spinner" style="display:none; margin-left:10px;">⏳</span>
+</button>
+<div style="margin-top: 12px; display: flex; align-items: center; font-size: 14px; color: #555;">
+<label for="consentimientoRGPD" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+<input id="consentimientoRGPD" style="width: 16px; height: 16px; margin: 0;" type="checkbox"/>
+<span>Acepto el tratamiento de mis datos conforme a la 
+      <a href="https://nrventurini.github.io/Pol-tica_privacidad/" style="color: #12517c;" target="_blank">Política de Privacidad</a>.
+    </span>
+</label>
+</div>
+<p id="emailFeedback" style="color: red; display: none; margin-top: 10px;"></p>
+<button class="btn" id="downloadBtn" onclick="window.open('https://github.com/nrventurini/ebook_longevidad/raw/main/guia-longevidad.pdf', '_blank')" style="display:none; margin-top: 20px;">
+  📥 Descargar guía gratuita en PDF
+</button>
+<p style="font-size: 15px; color: #777; margin-top: 10px;">
+  ⚖️ <strong>Compromiso VitalExtension:</strong> Usaremos tu email solo para enviarte tu guía gratuita y contenido valioso sobre longevidad. Nunca enviaremos spam ni compartiremos tus datos.
+</p>
+</div></div>
+<script>
+// 📊 Función para calcular la edad biológica basada en los biomarcadores ingresados
 
-      if (diff < -5) {
-        cssClass = 'optimal';
-        resultText = `🔵 ¡Felicidades! Tu edad biológica es significativamente más baja que tu edad real: <strong>${phenoAge.toFixed(1)} años</strong>. Estás ganando la partida al envejecimiento.`;
-      } else if (diff <= 5) {
-        cssClass = 'normal';
-        resultText = `🟡 Tu edad biológica es de <strong>${phenoAge.toFixed(1)} años</strong>, lo cual es similar a tu edad real. ¡Estás en el camino correcto!`;
-      } else {
-        cssClass = 'elevated';
-        resultText = `🔴 Tu edad biológica es de <strong>${phenoAge.toFixed(1)} años</strong>, lo cual es mayor que tu edad cronológica. Es hora de actuar para recuperar tu vitalidad.`;
-      }
+function calculatePhenoAge() {
+  const age = parseFloat(document.getElementById('age').value);
+  const glucose = parseFloat(document.getElementById('glucose').value);
+  const albumin = parseFloat(document.getElementById('albumin').value);
+  const creatinine = parseFloat(document.getElementById('creatinine').value);
+  const crp = parseFloat(document.getElementById('crp').value);
+  const lymphocytes = parseFloat(document.getElementById('lymphocytes').value);
+  const mcv = parseFloat(document.getElementById('mcv').value);
+  const rdw = parseFloat(document.getElementById('rdw').value);
+  const alkphos = parseFloat(document.getElementById('alkphos').value);
+  const wbc = parseFloat(document.getElementById('wbc').value);
 
-      document.getElementById('result').className = `result ${cssClass}`;
-      document.getElementById('result').innerHTML = `
-        ${resultText}
-        <div class="cta">
-          <a href="#">Activa tu membresía gratuita y recibe tu plan personalizado</a>
-        </div>
-      `;
-    }
-  </script>
-</body>
+  const xb = (
+    -19.907 +
+    0.0336 * age +
+    0.0095 * glucose +
+    -0.259 * albumin +
+    0.676 * creatinine +
+    0.157 * crp +
+    -0.021 * lymphocytes +
+    0.0268 * mcv +
+    0.3306 * rdw +
+    0.00188 * alkphos +
+    0.0554 * wbc
+  );
+
+  const phenoAge = 141.5 + Math.log(1 + Math.exp(xb)) * 10;
+  const diff = phenoAge - age;
+  let resultText = '';
+  let cssClass = '';
+
+  if (diff < -5) {
+    cssClass = 'optimal';
+    resultText = `🔵 ¡Felicidades! Tu edad biológica es significativamente más baja que tu edad real: <strong>${phenoAge.toFixed(1)} años</strong>. Estás ganando la partida al envejecimiento.`;
+  } else if (diff <= 5) {
+    cssClass = 'normal';
+    resultText = `🟡 Tu edad biológica es de <strong>${phenoAge.toFixed(1)} años</strong>, lo cual es similar a tu edad real. ¡Estás en el camino correcto!`;
+  } else {
+    cssClass = 'elevated';
+    resultText = `🔴 Tu edad biológica es de <strong>${phenoAge.toFixed(1)} años</strong>, lo cual es mayor que tu edad cronológica. Es hora de actuar para recuperar tu vitalidad.`;
+  }
+
+  document.getElementById('result').className = `result ${cssClass}`;
+
+  // 🧠 Insertar resultado y mostrar CTA con enlace correcto
+  document.getElementById('result').innerHTML = `
+   ${resultText}
+  `;
+
+  document.getElementById("cta").innerHTML = `
+    <!-- 🧠 Botón CTA con enlace a la página de servicios -->
+   <a href="https://www.vitalextension.com/servicios/" target="_blank" class="cta-button">
+      ¡Quiero reducir mi edad biológica ahora!
+    </a>
+  `;
+
+
+  document.getElementById("cta").style.display = "block";
+  document.getElementById("lead-magnet").style.display = "block";
+  setTimeout(() => {
+    document.getElementById("cta").style.opacity = "1";
+    document.getElementById("lead-magnet").style.opacity = "1";
+  }, 100);
+
+  const preguntasCaptcha = [
+    { pregunta: "Pregunta de seguridad: ¿Cuánto es 3 + 5?", respuesta: "8" },
+    { pregunta: "Pregunta de seguridad: ¿Cuánto es 10 - 5?", respuesta: "5" },
+    { pregunta: "Pregunta de seguridad: ¿Cuánto es 2 + 5?", respuesta: "7" },
+    { pregunta: "Pregunta de seguridad: ¿Cuánto es 6 - 2?", respuesta: "4" },
+    { pregunta: "Pregunta de seguridad: ¿Cuánto es 3 x 2?", respuesta: "6" },
+    { pregunta: "Pregunta de seguridad: ¿Cuánto es 1 x 2?", respuesta: "2" },
+    { pregunta: "Pregunta de seguridad: ¿Cuánto es 1 + 0?", respuesta: "1" },
+    { pregunta: "Pregunta de seguridad: ¿Cuánto es 1 + 2?", respuesta: "3" },
+    { pregunta: "Pregunta de seguridad: ¿Cuánto es 6 + 3?", respuesta: "9" }
+  ];
+  captchaActual = preguntasCaptcha[Math.floor(Math.random() * preguntasCaptcha.length)];
+  document.getElementById("captchaPregunta").textContent = captchaActual.pregunta;
+}
+</script>
+<script>
+// 📤 Función auxiliar para enviar datos del formulario a Google Sheets usando App Script
+
+function enviarResultadosAGoogleSheets(data) {
+  const formData = new FormData();
+  for (const key in data) {
+    formData.append(key, data[key]);
+  }
+
+  fetch("https://script.google.com/macros/s/AKfycbxiG6oK4N_KJ6p6t9vjfEe82Z-RNl77-doyQg4SHv630Jyr3bl6uXPlcMXjnIUhXZRv/exec", {
+    method: "POST",
+    body: formData
+  })
+  .then(response => response.text())
+  .then(text => console.log("✅ Datos enviados:", text))
+  .catch(error => console.error("❌ Error al enviar a Sheets:", error));
+}
+
+function enviarEmail() {
+  const name = document.getElementById("userName").value.trim();
+  const email = document.getElementById("userEmail").value;
+  const feedback = document.getElementById("emailFeedback");
+  const downloadBtn = document.getElementById("downloadBtn");
+  const btnText = document.getElementById("btnText");
+  const spinner = document.getElementById("spinner");
+  const submitBtn = document.getElementById("submitEmail");
+
+  // ✅ Validación RGPD
+  if (!document.getElementById("consentimientoRGPD").checked) {
+    feedback.textContent = "Debes aceptar la política de privacidad para continuar.";
+    feedback.style.color = "red";
+    feedback.style.display = "block";
+    return;
+  }
+
+  // Validar honeypot
+  if (document.getElementById("campoTrampa").value !== "") {
+    feedback.textContent = "Detección de comportamiento automático.";
+    feedback.style.color = "red";
+    feedback.style.display = "block";
+    return;
+  }
+
+  // Validar CAPTCHA
+  const captcha = document.getElementById("captchaRespuesta").value.trim();
+  if (captcha !== captchaActual.respuesta) {
+    feedback.textContent = "Respuesta incorrecta a la verificación. Intenta de nuevo.";
+    feedback.style.color = "red";
+    feedback.style.display = "block";
+    return;
+  }
+
+  // Validar email
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (!emailValid) {
+    feedback.textContent = "Por favor, revisa que el email sea válido.";
+    feedback.style.color = "red";
+    feedback.style.display = "block";
+    downloadBtn.style.display = "none";
+    return;
+  }
+
+  // Mostrar estado de envío
+  feedback.style.color = "green";
+  feedback.textContent = "Enviando...";
+  feedback.style.display = "block";
+  btnText.textContent = "Enviando...";
+  spinner.style.display = "inline-block";
+  submitBtn.disabled = true;
+
+  // Enviar datos a Google Sheets
+  enviarResultadosAGoogleSheets({
+    Nombre: name,
+    Email: email,
+    Origen: "Test_PhenoAge"
+  });
+
+  setTimeout(() => {
+    feedback.textContent = "✔️ ¡Listo! Tu guía está lista para descargar.";
+    downloadBtn.style.display = "block";
+    btnText.textContent = "Enviar";
+    spinner.style.display = "none";
+    submitBtn.disabled = false;
+  }, 1200);
+}
+</script></body>
 </html>
